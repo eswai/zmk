@@ -299,6 +299,7 @@ const naginata_keymap ngmap[] = {
     // 追加
     {.key = B_SPACE, .kana = {SPACE, NONE, NONE, NONE, NONE, NONE}},
     {.key = B_V | B_SPACE, .kana = {COMMA, ENTER, NONE, NONE, NONE, NONE}},
+    {.key = B_M | B_SPACE, .kana = {DOT, ENTER, NONE, NONE, NONE, NONE}},
     {.key = B_U, .kana = {BACKSPACE, NONE, NONE, NONE, NONE, NONE}},
 
     // enter
