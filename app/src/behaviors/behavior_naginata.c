@@ -76,7 +76,7 @@ const uint32_t ng_key[] = {
     [Q - A] = B_Q,     [R - A] = B_R,         [S - A] = B_S,         [T - A] = B_T,
     [U - A] = B_U,     [V - A] = B_V,         [W - A] = B_W,         [X - A] = B_X,
     [Y - A] = B_Y,     [Z - A] = B_Z,         [SEMI - A] = B_SEMI,   [COMMA - A] = B_COMMA,
-    [DOT - A] = B_DOT, [SLASH - A] = B_SLASH, [SPACE - A] = B_SPACE,
+    [DOT - A] = B_DOT, [SLASH - A] = B_SLASH, [SPACE - A] = B_SPACE, [ENTER - A] = B_SPACE,
 };
 
 #define NKEYS 3  // 最大何キーまでバッファに貯めるか
@@ -439,10 +439,11 @@ uint8_t evaluate() {
 // 戻り値 変換処理したキーの数
 uint8_t naginata_type(bool partial, int32_t timestamp) {
 
-    // if (ng_chrcount == 1 && nginput[0].keycode == NG_SPACE2) {
-    //     tap_code(KC_ENT);
-    //     return 1;
-    // }
+    if (ng_chrcount == 1 && nginput[0].keycode == ENTER) {
+        ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(ENTER, true, timestamp));
+        ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(ENTER, false, timestamp));
+        return 1;
+    }
 
     // naginata_keymap bngmap; // PROGMEM buffer
 
@@ -572,6 +573,7 @@ bool naginata_press(struct zmk_behavior_binding *binding, struct zmk_behavior_bi
     switch (keycode) {
     case A ... Z:
     case SPACE:
+    case ENTER:
     case DOT:
     case COMMA:
     case SLASH:
@@ -637,6 +639,7 @@ bool naginata_release(struct zmk_behavior_binding *binding,
     switch (keycode) {
     case A ... Z:
     case SPACE:
+    case ENTER:
     case DOT:
     case COMMA:
     case SLASH:
