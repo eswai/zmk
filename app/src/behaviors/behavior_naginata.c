@@ -606,7 +606,7 @@ bool naginata_press(struct zmk_behavior_binding *binding, struct zmk_behavior_bi
             ng_chrcount = tch;
             keycomb = 0UL;
             for (uint8_t i = 0; i < ng_chrcount; i++) {
-                keycomb |= ng_key[nginput[i].keycode];
+                keycomb |= ng_key[nginput[i].keycode - A];
             }
         }
 
