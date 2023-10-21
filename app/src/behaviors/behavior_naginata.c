@@ -461,22 +461,18 @@ uint8_t naginata_type(bool partial, int32_t timestamp) {
             keycomb_buf |= ng_key[ngingroup[i][j].keycode - A];
         }
         switch (keycomb_buf) {
-        // case B_T:
-        //     ng_left(1);
-        //     break;
-        // case B_Y:
-        //     ng_right(1);
-        //     break;
-        // case B_SPACE | B_T:
-        //     register_code(KC_LSFT);
-        //     ng_left(1);
-        //     unregister_code(KC_LSFT);
-        //     break;
-        // case B_SPACE | B_Y:
-        //     register_code(KC_LSFT);
-        //     ng_right(1);
-        //     unregister_code(KC_LSFT);
-        //     break;
+        case B_T:
+            ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(LEFT, true, timestamp));
+            break;
+        case B_Y:
+            ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(RIGHT, true, timestamp));
+            break;
+        case B_SPACE | B_T:
+            ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(LS(LEFT), true, timestamp));
+            break;
+        case B_SPACE | B_Y:
+            ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(LS(RIGHT), true, timestamp));
+            break;
         // case B_H | B_J:
         //     naginata_on();
         //     break;
@@ -684,9 +680,8 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
 
     naginata_press(binding, event);
+
     return ZMK_BEHAVIOR_OPAQUE;
-    // return ZMK_EVENT_RAISE(
-    //     zmk_keycode_state_changed_from_encoded(binding->param1, true, event.timestamp));
 }
 
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
@@ -696,8 +691,6 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
     naginata_release(binding, event);
 
     return ZMK_BEHAVIOR_OPAQUE;
-    // return ZMK_EVENT_RAISE(
-    //     zmk_keycode_state_changed_from_encoded(binding->param1, false, event.timestamp));
 }
 
 static const struct behavior_driver_api behavior_naginata_driver_api = {
