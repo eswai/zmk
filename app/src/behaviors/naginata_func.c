@@ -8,7 +8,7 @@
 #include <zmk/behavior.h>
 #include "naginata_func.h"
 
-uint32_t timestamp;
+int64_t timestamp;
 
 #define NG_WIN 0
 #define NG_MAC 1

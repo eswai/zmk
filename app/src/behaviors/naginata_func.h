@@ -1,6 +1,6 @@
 
-void naginata_on(void);
-void naginata_off(void);
+// void naginata_on(void);
+// void naginata_off(void);
 void nofunc(void);
 void ng_T(void);
 void ng_Y(void);

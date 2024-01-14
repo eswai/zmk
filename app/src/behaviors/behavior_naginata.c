@@ -19,7 +19,7 @@
 #include "naginata_func.h"
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
-extern uint32_t timestamp;
+extern int64_t timestamp;
 
 #define NONE 0
 
@@ -125,11 +125,11 @@ const naginata_kanamap ngdickana[] = {
     {.shift = 0UL, .douji = B_O, .kana = {S, U, NONE, NONE, NONE, NONE}, .func = nofunc},     // す
     {.shift = B_SPACE, .douji = B_A, .kana = {S, E, NONE, NONE, NONE, NONE}, .func = nofunc}, // せ
     {.shift = 0UL, .douji = B_B, .kana = {S, O, NONE, NONE, NONE, NONE}, .func = nofunc},     // そ
-    {.shift = 0UL, .douji = B_N, .kana = {T, S, NONE, NONE, NONE, NONE}, .func = nofunc},     // た
-    {.shift = B_SPACE, .douji = B_G, .kana = {T, S, NONE, NONE, NONE, NONE}, .func = nofunc}, // ち
-    {.shift = B_SPACE, .douji = B_L, .kana = {T, S, NONE, NONE, NONE, NONE}, .func = nofunc}, // つ
-    {.shift = 0UL, .douji = B_E, .kana = {T, S, NONE, NONE, NONE, NONE}, .func = nofunc},     // て
-    {.shift = 0UL, .douji = B_D, .kana = {T, S, NONE, NONE, NONE, NONE}, .func = nofunc},     // と
+    {.shift = 0UL, .douji = B_N, .kana = {T, A, NONE, NONE, NONE, NONE}, .func = nofunc},     // た
+    {.shift = B_SPACE, .douji = B_G, .kana = {T, I, NONE, NONE, NONE, NONE}, .func = nofunc}, // ち
+    {.shift = B_SPACE, .douji = B_L, .kana = {T, U, NONE, NONE, NONE, NONE}, .func = nofunc}, // つ
+    {.shift = 0UL, .douji = B_E, .kana = {T, E, NONE, NONE, NONE, NONE}, .func = nofunc},     // て
+    {.shift = 0UL, .douji = B_D, .kana = {T, O, NONE, NONE, NONE, NONE}, .func = nofunc},     // と
     {.shift = 0UL, .douji = B_M, .kana = {N, A, NONE, NONE, NONE, NONE}, .func = nofunc},     // な
     {.shift = B_SPACE, .douji = B_D, .kana = {N, I, NONE, NONE, NONE, NONE}, .func = nofunc}, // に
     {.shift = B_SPACE, .douji = B_W, .kana = {N, U, NONE, NONE, NONE, NONE}, .func = nofunc}, // ぬ
@@ -153,7 +153,7 @@ const naginata_kanamap ngdickana[] = {
      .func = nofunc},                                                                         // む
     {.shift = B_SPACE, .douji = B_S, .kana = {M, E, NONE, NONE, NONE, NONE}, .func = nofunc}, // め
     {.shift = B_SPACE, .douji = B_K, .kana = {M, O, NONE, NONE, NONE, NONE}, .func = nofunc}, // も
-    {.shift = B_SPACE, .douji = B_H, .kana = {Y, O, NONE, NONE, NONE, NONE}, .func = nofunc}, // や
+    {.shift = B_SPACE, .douji = B_H, .kana = {Y, A, NONE, NONE, NONE, NONE}, .func = nofunc}, // や
     {.shift = B_SPACE, .douji = B_P, .kana = {Y, U, NONE, NONE, NONE, NONE}, .func = nofunc}, // ゆ
     {.shift = B_SPACE, .douji = B_I, .kana = {Y, O, NONE, NONE, NONE, NONE}, .func = nofunc}, // よ
     {.shift = 0UL, .douji = B_DOT, .kana = {R, A, NONE, NONE, NONE, NONE}, .func = nofunc},   // ら
@@ -413,7 +413,7 @@ const naginata_kanamap ngdickana[] = {
      .func = nofunc}, // でゅ
     {.shift = 0UL,
      .douji = B_M | B_D | B_L,
-     .kana = {T, S, X, U, NONE, NONE},
+     .kana = {T, O, X, U, NONE, NONE},
      .func = nofunc}, // とぅ
     {.shift = 0UL,
      .douji = B_J | B_D | B_L,
@@ -425,7 +425,7 @@ const naginata_kanamap ngdickana[] = {
      .func = nofunc}, // しぇ
     {.shift = 0UL,
      .douji = B_M | B_G | B_O,
-     .kana = {T, S, E, NONE, NONE, NONE},
+     .kana = {T, Y, E, NONE, NONE, NONE},
      .func = nofunc}, // ちぇ
     {.shift = 0UL,
      .douji = B_J | B_R | B_O,
@@ -998,7 +998,7 @@ bool naginata_press(struct zmk_behavior_binding *binding, struct zmk_behavior_bi
     case COMMA:
     case SLASH:
     case SEMI:
-
+        n_pressed_keys++;
         pressed_keys |= ng_key[keycode - A]; // キーの重ね合わせ
 
         if (keycode == SPACE || keycode == ENTER) {
@@ -1082,6 +1082,10 @@ bool naginata_release(struct zmk_behavior_binding *binding,
     case COMMA:
     case SLASH:
     case SEMI:
+        if (n_pressed_keys > 0)
+            n_pressed_keys--;
+        if (n_pressed_keys == 0)
+            pressed_keys = 0;
 
         pressed_keys &= ~ng_key[keycode - A]; // キーの重ね合わせ
 
@@ -1113,8 +1117,6 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
 
-    n_pressed_keys++;
-
     timestamp = event.timestamp;
     naginata_press(binding, event);
 
@@ -1124,11 +1126,6 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
-
-    if (n_pressed_keys > 0)
-        n_pressed_keys--;
-    if (n_pressed_keys == 0)
-        pressed_keys = 0;
 
     timestamp = event.timestamp;
     naginata_release(binding, event);
