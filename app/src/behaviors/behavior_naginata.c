@@ -1014,8 +1014,8 @@ void ng_type(NGList *keys) {
 
     if (keys->size == 1 && keys->elements[0] == ENTER) {
         LOG_DBG(" NAGINATA type keycode 0x%02X", ENTER);
-        ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(ENTER, true, timestamp));
-        ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(ENTER, false, timestamp));
+        raise_zmk_keycode_state_changed_from_encoded(ENTER, true, timestamp);
+        raise_zmk_keycode_state_changed_from_encoded(ENTER, false, timestamp);
         return;
     }
 
@@ -1031,10 +1031,10 @@ void ng_type(NGList *keys) {
                     if (ngdickana[i].kana[k] == NONE)
                         break;
                     LOG_DBG(" NAGINATA type keycode 0x%02X", ngdickana[i].kana[k]);
-                    ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(ngdickana[i].kana[k],
-                                                                           true, timestamp));
-                    ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(ngdickana[i].kana[k],
-                                                                           false, timestamp));
+                    raise_zmk_keycode_state_changed_from_encoded(ngdickana[i].kana[k], true,
+                                                                 timestamp);
+                    raise_zmk_keycode_state_changed_from_encoded(ngdickana[i].kana[k], false,
+                                                                 timestamp);
                 }
             } else {
                 ngdickana[i].func();
