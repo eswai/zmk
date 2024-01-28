@@ -463,7 +463,7 @@ static naginata_kanamap ngdickana[] = {
     // 清音外来音 濁音外来音
     {.shift = NONE,
      .douji = B_M | B_E | B_K,
-     .kana = {T, S, I, NONE, NONE, NONE},
+     .kana = {T, H, I, NONE, NONE, NONE},
      .func = nofunc}, // てぃ
     {.shift = NONE,
      .douji = B_M | B_E | B_P,
