@@ -991,7 +991,13 @@ int number_of_candidates(NGList *keys, bool strict) {
                 }
                 for (int i = 0; i < sizeof ngdickana / sizeof ngdickana[0]; i++) {
                     if (ngdickana[i].shift == 0UL && ((ngdickana[i].douji & keyset) == keyset)) {
-                        noc++;
+                        // シェ、チェは2キーでnoc=1になるが、3キー目を押していないので早期確定してはいけない
+                        // if (keys->size < ..) { としたいが
+                        if (keyset == (B_M | B_R) || keyset == (B_M | B_G)) {
+                            noc = 2;
+                        } else {
+                            noc++;
+                        }
                         if (noc > 1)
                             break;
                     }
