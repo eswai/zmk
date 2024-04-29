@@ -25,12 +25,12 @@ typedef union {
 user_config_t naginata_config;
 
 // 薙刀式をオン
-// void naginata_on(void) {
-//     raise_zmk_keycode_state_changed_from_encoded(LANG1, true, timestamp);
-//     raise_zmk_keycode_state_changed_from_encoded(LANG1, false, timestamp);
-//     raise_zmk_keycode_state_changed_from_encoded(INT4, true, timestamp);
-//     raise_zmk_keycode_state_changed_from_encoded(INT4, false, timestamp);
-// }
+void naginata_on(void) {
+    raise_zmk_keycode_state_changed_from_encoded(LANG1, true, timestamp);
+    raise_zmk_keycode_state_changed_from_encoded(LANG1, false, timestamp);
+    raise_zmk_keycode_state_changed_from_encoded(INT4, true, timestamp);
+    raise_zmk_keycode_state_changed_from_encoded(INT4, false, timestamp);
+}
 
 // 薙刀式をオフ
 // void naginata_off(void) {
